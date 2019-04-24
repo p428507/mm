@@ -1,29 +1,26 @@
-const express = require('express')
-const bodyParser = require('body-parser')
+from flask import Flask, request, jsonify
+import json
 
-const app = express()
-const port = 5000
-app.use(bodyParser.json())
+app = Flask(__name__)
+port = '5000'
 
-app.post('/', (req, res) => {
-  console.log(req.body)
-
-  res.send({
-    replies: [{
-      type: 'text',
-      content: 'Roger that',
+@app.route('/', methods=['POST'])
+def index():
+  print(json.loads(request.get_data()))
+  return jsonify(
+    status=200,
+    replies=[{
+      'type': 'text',
+      'content': 'Roger that',
     }],
-    conversation: {
-      memory: { key: 'value' }
+    conversation={
+      'memory': { 'key': 'value' }
     }
-  })
-})
+  )
 
-app.post('/errors', (req, res) => {
-  console.log(req.body)
-  res.send()
-})
+@app.route('/errors', methods=['POST'])
+def errors():
+  print(json.loads(request.get_data()))
+  return jsonify(status=200)
 
-app.listen(port, () => {
-  console.log('Server is running on port 5000')
-})
+app.run(port=port)
